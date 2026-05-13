@@ -1,0 +1,42 @@
+package com.example.ecommerce.application.service;
+
+
+import com.example.ecommerce.application.repository.OrderRepository;
+import com.example.ecommerce.application.repository.ProductRepository;
+import com.example.ecommerce.domain.order.Order;
+import com.example.ecommerce.domain.order.OrderItem;
+import com.example.ecommerce.domain.product.Product;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+@Transactional
+public class OrderService {
+
+    private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
+
+    public OrderService(OrderRepository orderRepository, ProductRepository productRepository) {
+        this.orderRepository = orderRepository;
+        this.productRepository = productRepository;
+    }
+
+
+    public Order createOrder(Long userId,
+                            Long productId,
+                            int quantity){
+
+        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("Product id does not exists"));
+
+        product.decreaseStock(quantity);
+        OrderItem orderItem = new OrderItem(product.getId(), product.getName(), product.getUnitPrice(), quantity);
+
+        Order order = new Order(userId);
+        order.addItem(orderItem);
+
+        return orderRepository.save(order);
+
+    }
+}

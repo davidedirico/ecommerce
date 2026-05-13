@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16
+    container_name: ecommerce-db
+    environment:
+      POSTGRES_DB: ecommerce
+      POSTGRES_USER: ecommerce
+      POSTGRES_PASSWORD: ecommerce
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    container_name: ecommerce-app
+    depends_on:
+      - db
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/ecommerce
+      DB_USER: ecommerce
+      DB_PASSWORD: ecommerce
+    ports:
+      - "8080:8080"
+
+volumes:
+  db_data:

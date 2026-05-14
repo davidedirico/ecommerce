@@ -1,5 +1,6 @@
 package com.example.ecommerce.domain.order;
 
+import com.example.ecommerce.exception.InvalidQuantityException;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 
@@ -43,7 +44,7 @@ public class OrderItem {
         this.priceAtPurchase = priceAtPurchase;
         this.productName = productName;
         if(quantity<=0) {
-            throw new IllegalArgumentException("Quantity must be greater than zero");
+            throw new InvalidQuantityException();
         }
         this.quantity = quantity;
     }

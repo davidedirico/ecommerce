@@ -1,5 +1,7 @@
 package com.example.ecommerce.domain.product;
 
+import com.example.ecommerce.exception.InvalidQuantityException;
+import com.example.ecommerce.exception.StockErrorException;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -82,16 +84,14 @@ public class Product {
 
     public void decreaseStock (int quantity) {
      if (quantity<0) {
-         throw new IllegalArgumentException("quantoty must be greater than 0");
+         throw new InvalidQuantityException();
      }
 
      if (availableQuantity < quantity) {
-            throw new IllegalStateException("Not enough stock");
+            throw new StockErrorException();
         }
      this.availableQuantity -= quantity;
-
     }
-
 
     @PreUpdate
     void onUpdate () {

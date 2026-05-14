@@ -6,6 +6,7 @@ import com.example.ecommerce.application.repository.ProductRepository;
 import com.example.ecommerce.domain.order.Order;
 import com.example.ecommerce.domain.order.OrderItem;
 import com.example.ecommerce.domain.product.Product;
+import com.example.ecommerce.exception.InvalidProductException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class OrderService {
                             Long productId,
                             int quantity){
 
-        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("Product id does not exists"));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new InvalidProductException());
 
         product.decreaseStock(quantity);
         OrderItem orderItem = new OrderItem(product.getId(), product.getName(), product.getUnitPrice(), quantity);

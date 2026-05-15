@@ -8,11 +8,9 @@ import com.example.ecommerce.application.service.OrderService;
 import com.example.ecommerce.domain.order.Order;
 import com.example.ecommerce.domain.order.OrderItem;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -43,6 +41,22 @@ public class OrderController {
                 order.getId());
 
          return orderResponse;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<OrderResponse>> getAllOrders() {
+        List<Order> orders = orderService.getAllOrders();
+        List<OrderResponse> ordersDTO = orders.stream()
+                .map(this::toResponse)
+                .toList();
+        return ResponseEntity.ok(ordersDTO);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderResponse> getOrder (@PathVariable Long id){
+        Order order = orderService.getOrder(id);
+        return ResponseEntity.ok(toResponse(order));
+
     }
 
     private OrderItemResponse toItemResponse (OrderItem orderItem){

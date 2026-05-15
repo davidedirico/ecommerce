@@ -6,10 +6,8 @@ import com.example.ecommerce.exception.InvalidProductException;
 import com.example.ecommerce.exception.InvalidQuantityException;
 import com.example.ecommerce.exception.StockErrorException;
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.aspectj.weaver.ast.Var;
+import org.junit.jupiter.api.*;
 import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
@@ -43,33 +41,19 @@ public class OrderApiTest {
         orderRequestDTO.setProductId(2L);
         orderRequestDTO.setQuantity(1);
 
-        given()
+        var orderResponse = given()
                 .contentType("application/json")
                 .body(orderRequestDTO)
                 .when()
                 .post("/orders")
                 .then()
-                .statusCode(200);
-    }
-
-    @Test
-    public void TC_OC_RBV_001() {
-        orderRequestDTO.setUserId(1L);
-        orderRequestDTO.setProductId(2L);
-        orderRequestDTO.setQuantity(1);
-
-        OrderResponse orderResponse =  given()
-                .contentType("application/json")
-                .body(orderRequestDTO)
-                .when()
-                .post("/orders")
-                .then()
+                .statusCode(200)
+                .and()
                 .extract()
                 .body()
                 .as(OrderResponse.class);
 
         BigDecimal price = new BigDecimal("140.00");
-
         orderResponse.getItems().forEach(item-> {
             Assertions.assertEquals(2L, item.getProductId());
             Assertions.assertEquals(1, item.getQuantity());

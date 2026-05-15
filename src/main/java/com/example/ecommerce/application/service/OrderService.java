@@ -10,6 +10,7 @@ import com.example.ecommerce.exception.InvalidProductException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,5 +40,13 @@ public class OrderService {
 
         return orderRepository.save(order);
 
+    }
+
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
+    public Order getOrder(Long id) {
+        return orderRepository.findById(id).orElseThrow(()-> new RuntimeException("order "+ id + "does not exists"));
     }
 }
